@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExpressJs Auto API From MongoDB</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+
+    <style>
+        .bg-kbank {
+            background-color: #01a44e !important;
+        }
+
+        .bg-tmb {
+            background-color: #0e6cb5 !important;
+        }
+
+        .bg-bkk {
+            background-color: #10177e !important;
+        }
+
+        .bg-ktb {
+            background-color: #0076a7 !important;
+        }
+
+        .bg-pp {
+            background-color: #003d6a !important;
+        }
+
+        .bg-twal {
+            background-color: #ed1c23 !important;
+        }
+    </style>
+</head>
+
+<body class="container">
+    <h1>Easy ExpressJs Auto API From MongoDB</h1>
+    <div class="alert alert-secondary">
+        <p>API สำหรับ MongoDB แค่เชื่อมต่อ Database ก็สามารถ เพิ่ม ลบ แก้ไข ดึงข้อมูล
+            <br>No Coding หากไม่ได้ต้องการ การคำนวนอะไรซับซ่อน
+            <br>มี AutoIncrement ให้ในตัวจาก _id:5f1a04dfa53b191f589c98cd เป็น _id:1
+            <br>ไม่จำเป็นต้องสร้าง Database และ collection ใน MongoDB ก่อน และไม่จำเป็นต้องเขียน Mongo Model</p>
+    </div>
+    <h3>ตัวแปร</h3>
+    <div class="alert alert-secondary">
+        <p><strong>:collection</strong> collection name หรือ table หากเรียกตาม Mysql</p>
+        <p><strong>?limit</strong> Limit จำนวนที่แสดงออกมา <strong>0=ทั้งหมด หรือไม่ใส่</strong></p>
+        <p><strong>?q</strong> รูปแบบเป็น JSON ใช้ filter ข้อมูล เช่น <code
+                class="language-json">{"name":"car","price":1500000}</code></p>
+    </div>
+    <h3>รูปแบบ URL เรียกใช้งาน Method GET POST PUT DELETE</h3>
+    <h4>Method PUT เพิ่มข้อมูล</h4>
+    <div class="alert alert-secondary">
+        <p>เพิ่มข้อมูลผ่าน ได้ 2 แบบ คือ <strong>application/json</strong> และ
+            <strong>application/x-www-form-urlencoded</strong></p>
+        <p><strong>PUT</strong> http://localhost:3000/api/:collection เพิ่มข้อมูลใหม่</p>
+    </div>
+
+    <h4>Method GET ดึงข้อมูล</h4>
+    <div class="alert alert-secondary">
+        <p><strong>GET</strong> http://localhost:3000/api/:collection ดึงข้อมูล ?q={json} และ ?limit=number</p>
+        <p><strong>GET</strong> http://localhost:3000/api/:collection/:id ดึงข้อมูล ?limit=number</p>
+    </div>
+    <h4>Method POST แก้ไขข้อมูล</h4>
+    <div class="alert alert-secondary">
+        <p><strong>POST</strong> http://localhost:3000/api/:collection แก้ไขข้อมูล ?q={json}</p>
+        <p><strong>POST</strong> http://localhost:3000/api/:collection/:id แก้ไขข้อมูล</p>
+    </div>
+    <h4>Method DELETE ลบข้อมูล</h4>
+    <div class="alert alert-secondary">
+        <p><strong>DELETE</strong> http://localhost:3000/api/:collection ลบข้อมูล ?q={json}</p>
+        <p><strong>DELETE</strong> http://localhost:3000/api/:collection/:id ลบข้อมูล</p>
+    </div>
+    <h3>ตัวอย่างการเรียกใช้งาน GET ดึงข้อมูล</h3>
+    <pre>
+        <code class="language-js">
+        fetch("http://localhost:3000/api/product")
+            .then(response => response.json())
+            .then(result => console.log(result))
+        </code>
+        <code class="language-js">
+        fetch("http://localhost:3000/api/product/5")
+            .then(response => response.json())
+            .then(result => console.log(result))
+        </code>
+        <code class="language-js">
+        fetch("http://localhost:3000/api/product/?q={\"car\": 270000}")
+            .then(response => response.json())
+            .then(result => console.log(result))
+        </code>
+        <code class="language-js">
+        fetch("http://localhost:3000/api/product?limit=5")
+            .then(response => response.json())
+            .then(result => console.log(result))
+        </code>
+    </pre>
+    <h3>ตัวอย่างการเรียกใช้งาน PUT เพิ่มข้อมูล</h3>
+    <pre>
+        <code class="language-js">
+        // ไม่ แนะนำวิธีแบบ application/x-www-form-urlencoded เพราะข้อมูล Number จะกลายเป็น String หมด
+        var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+            urlencoded.append("car", 270000);
+            urlencoded.append("namecar", "Toyota 2.0 XL");
+            urlencoded.append("image", "url");
+            urlencoded.append("status", "open");
+
+        fetch("http://localhost:3000/api/product", {
+            method: 'PUT',
+            headers: myHeaders,
+            body: urlencoded //or car=270000&namecar=Toyota 2.0 XL
+        })
+            .then(response => response.json())
+            .then(result => console.log(result))
+        </code>
+        
+        <code class="language-js">
+        // แนะนำวิธีแบบ application/json เพราะสามารถใส่ค่าตัวแปรเป็น Number ได้นะครับ
+        var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+
+        fetch("http://localhost:3000/api/product", {
+            method: 'PUT',
+            headers: myHeaders,
+            body: JSON.stringify({"car":170000,"namecar":"Toyota 2.0 XL","image":["url1","url2","url3"],"status":"open"})
+        })
+            .then(response => response.json())
+            .then(result => console.log(result))
+        </code>
+    </pre>
+
+    <h3>ตัวอย่างการเรียกใช้งาน POST แก้ไขข้อมูล</h3>
+    <pre>
+        <code class="language-js">
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+        
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("car", 270000);
+        
+        fetch("http://localhost:3000/api/product/1", {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded
+        })
+            .then(response => response.json())
+            .then(result => console.log(result))
+        </code>
+        <code class="language-js">
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        fetch("http://localhost:3000/api/product/?q={\"car\": 270000}", {
+            method: 'POST',
+            headers: myHeaders,
+            body: JSON.stringify({"car":300000})
+        })
+            .then(response => response.json())
+            .then(result => console.log(result))
+        </code>
+    </pre>
+
+    <h3>ตัวอย่างการเรียกใช้งาน DELETE ลบข้อมูล</h3>
+    <pre>
+        <code class="language-js">
+        fetch("http://localhost:3000/api/product", {
+            method: 'DELETE'
+        })
+            .then(response => response.json())
+            .then(result => console.log(result))
+        </code>
+        <code class="language-js">
+        fetch("http://localhost:3000/api/product?q={\"car\": 270000}", {
+            method: 'DELETE'
+        })
+            .then(response => response.json())
+            .then(result => console.log(result))
+        </code>
+    </pre>
+
+    <p>อ่าน Document <a target="_blank"
+            href="https://docs.mongodb.com/manual/reference/method/db.collection.find/">ที่นี้</a></p>
+
+    <h1>บริจาคค่ายกาแฟ</h1>
+    <div class="row my-5">
+        <div class="col-12">
+            <div class="card-deck">
+                <div class="position-relative card text-white bg-kbank">
+                    <div class="card-img-top"
+                        style="background: url(https://cii3.net/dist/static/payment/bank-transfer-logo.png) no-repeat;width: 100px;height: 100px;    background-position: 0px -117px;position: absolute;top: 10px;right: 20px;">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">ธนาคารกสิกรไทย</h5>
+                        <p class="card-text">เลขบัญชี: 006-837-5320<br>
+                            ประเภทบัญชี: ออมทรัพย์<br>
+                            ฃื่อบัญชี: ธนชิต สิทธิกัน<br>
+                            (Thanachit Sitthikan)</p>
+                    </div>
+                </div>
+                <div class="position-relative card text-white bg-tmb">
+                    <div
+                        style="background: url(https://cii3.net/dist/static/payment/bank-transfer-logo.png) no-repeat;width: 100px;height: 100px;background-position: -237px -236px;position: absolute;top: 10px;right: 20px;">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">ธนาคารทหารไทย</h5>
+                        <p class="card-text">เลขบัญชี: 229-2-32796-8<br>
+                            ประเภทบัญชี: ออมทรัพย์<br>
+                            ฃื่อบัญชี: ธนชิต สิทธิกัน<br>
+                            (Thanachit Sitthikan)</p>
+                    </div>
+                </div>
+                <div class="position-relative card text-white bg-bkk">
+                    <div
+                        style="background: url(https://cii3.net/dist/static/payment/bank-transfer-logo.png) no-repeat;width: 100px;height: 100px;background-position: 0 0;position: absolute;top: 10px;right: 20px;">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">ธนาคารกรุงเทพ</h5>
+                        <p class="card-text">เลขบัญชี: 008-7-33262-3<br>
+                            ประเภทบัญชี: ออมทรัพย์<br>
+                            ฃื่อบัญชี: ชนิดา สุวรรณรัตน์<br>
+                            (Chanida Suwannarat)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-deck mt-5">
+                <div class="position-relative card text-white bg-twal">
+                    <div
+                        style="background: url(https://cii3.net/dist/static/payment/bankallow.png) no-repeat;width: 180px;height: 90px;background-position: 0 0;position: absolute;top: -8px;right: 0px;">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">True Wallet</h5>
+                        <p class="card-text">หมายเลข: 064-123-5678<br>
+                            แจ้งชำระ: ในฟร์อมแจ้งโอน<br>
+                            ฃื่อบัญชี: ธนชิต สิทธิกัน<br>
+                            (Thanachit Sitthikan)</p>
+                    </div>
+                </div>
+                <div class="position-relative card text-white bg-ktb">
+                    <div
+                        style="background: url(https://cii3.net/dist/static/payment/bank-transfer-logo.png) no-repeat;width: 100px;height: 100px;background-position: -117px -115px;position: absolute;top: 10px;right: 20px;">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">ธนาคารกรุงไทย</h5>
+                        <p class="card-text">เลขบัญชี: 842-0-08598-7<br>
+                            ประเภทบัญชี: ออมทรัพย์<br>
+                            ฃื่อบัญชี: ธนชิต สิทธิกัน<br>
+                            (Thanachit Sitthikan)</p>
+                    </div>
+                </div>
+                <div class="position-relative card text-white bg-pp">
+                    <div
+                        style="background: url(https://cii3.net/dist/static/payment/bankallow.png) no-repeat;width: 160px;height: 90px;background-position: -495px 0;position: absolute;top: -20px;right: 0px;">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Prompt Pay</h5>
+                        <p class="card-text">หมายเลข: 064-123-5678<br>
+                            แจ้งชำระ: ในฟร์อมแจ้งโอน<br>
+                            ฃื่อบัญชี: ธนชิต สิทธิกัน<br>
+                            (Thanachit Sitthikan)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+</body>
+
+</html>
