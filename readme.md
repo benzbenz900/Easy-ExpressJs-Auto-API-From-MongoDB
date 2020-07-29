@@ -1,12 +1,30 @@
-Easy ExpressJs Auto API From MongoDB
-====================================
-### https://apimongo.cii3.net/ || https://mongodb-api-auto.herokuapp.com/
+Easy Express Js Auto API From MongoDB
+=====================================
+
 API สำหรับ MongoDB แค่เชื่อมต่อ Database ก็สามารถ เพิ่ม ลบ แก้ไข
 ดึงข้อมูล \
 No Coding หากไม่ได้ต้องการ การคำนวนอะไรซับซ่อน \
 มี AutoIncrement ให้ในตัวจาก \_id:5f1a04dfa53b191f589c98cd เป็น \_id:1 \
 ไม่จำเป็นต้องสร้าง Database และ collection ใน MongoDB ก่อน
 และไม่จำเป็นต้องเขียน Mongo Model
+
+[ตัวอย่าง https://apimongo.cii3.net/](https://apimongo.cii3.net/)
+
+[ตัวอย่าง
+https://mongodb-api-auto.herokuapp.com/](https://mongodb-api-auto.herokuapp.com/)
+
+### ติดตั้ง
+
+**git clone**
+https://gitlab.com/benzbenz900/easy-expressjs-auto-api-from-mongodb.git
+
+**cd easy-expressjs-auto-api-from-mongodb**
+
+**npm install**
+
+**node api.js**
+
+**http://localhost:3000/**
 
 ### ตัวแปร
 
